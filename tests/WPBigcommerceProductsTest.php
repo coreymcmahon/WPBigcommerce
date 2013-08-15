@@ -13,7 +13,7 @@ class WPBigcommerceProductsTest extends PHPUnit_Framework_TestCase {
 
         $this->request->expects($this->once())
             ->method('get')
-            ->with('/products.json', array('limit' => 10, 'page' => 1,))
+            ->with('/api/v2/products.json', array('limit' => 10, 'page' => 1,))
             ->will($this->returnValue(''));
 
         $this->products = new WPBigcommerceProducts($this->request);

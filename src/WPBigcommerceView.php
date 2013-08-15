@@ -7,7 +7,7 @@ class WPBigcommerceView
     private $templatePath;
     private $templateExt;
 
-    public function __construct($template, $data, $templatePath = '', $templateExt = '')
+    public function __construct($template, $data = array(), $templatePath = '', $templateExt = '')
     {
         $this->template = $template;
         $this->data = $data;

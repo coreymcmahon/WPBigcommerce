@@ -82,4 +82,14 @@ class WPBigcommerceHttpRequestTest extends PHPUnit_Framework_TestCase {
         $request->get('/');
     }
 
+    public function testFailedRequestReturnsNull()
+    {
+        $request = new WPBigcommerceHttpRequest('http://www.google.com', array(), $this->wpRemoteRequest);
+        $this->wpRemoteRequest->expects($this->once())
+            ->method('remoteRequest')
+            ->will($this->returnValue(array( 'response' => array ( 'code' => 400 ))));
+
+        $this->assertNull($request->get('/'));
+    }
+
 }

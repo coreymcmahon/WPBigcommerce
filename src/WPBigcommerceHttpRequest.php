@@ -78,6 +78,8 @@ class WPBigcommerceHttpRequest {
 
         $response = $this->remoteRequest->remoteRequest($this->domain . $url, $request);
 
+        if ($response['response']['code'] != '200') return null;
+
         return $response['body'];
     }
 }

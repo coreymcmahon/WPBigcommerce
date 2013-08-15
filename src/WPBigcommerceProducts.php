@@ -21,6 +21,12 @@ class WPBigcommerceProducts
         $this->limit = ($limit !== null) ? $limit : 10;
     }
 
+    public function testConnection()
+    {
+        $time = $this->request->get('/api/v2/time.json');
+        return $time !== null;
+    }
+
     public function fetch()
     {
         $products = $this->request->get('/api/v2/products.json', array('page' => $this->page, 'limit' => $this->limit));
@@ -37,8 +43,13 @@ class WPBigcommerceProducts
     // @TODO: change this lameness
     public static function shortcode()
     {
-        $request = new WPBigcommerceHttpRequest('https://store-3hdjd3.mybigcommerce.com');
-        $request->auth('admin', '1efd11a7e371c75aaebab73d65ce5ef285b98d0b');
+        $options = get_option('wp_bigcommerce_options');
+        //$request = new WPBigcommerceHttpRequest('https://store-3hdjd3.mybigcommerce.com');
+        //$request->auth('admin', '1efd11a7e371c75aaebab73d65ce5ef285b98d0b');
+
+        $request = new WPBigcommerceHttpRequest($options['api_url']);
+        $request->auth($options['api_user'], $options['api_secret']);
+
         $products = new self($request);
 
         foreach ($products->fetch() as $product) {
