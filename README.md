@@ -2,10 +2,11 @@
 
 
 ## Todos
+* Get images for products
 * "Insert products" - provide IDs to the shortcode, shortcode displays them
 * Different templates for products
 * "Only show visible products" option
-* Launch with support for first 300 products ONLY
+* Launch with support for first 250 products ONLY
 
 
 ### Someday-maybe list

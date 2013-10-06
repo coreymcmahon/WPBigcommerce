@@ -8,4 +8,12 @@
 
         <?php submit_button(); ?>
     <form>
+
+	<?php /*
+    <form method="post">
+    	<p class="submit">
+    		<input type="submit" name="clear_cache" id="clear_cache" class="button button-primary" value="Clear Cache">
+    	</p>
+    </form>
+    */ ?>
 </div>

@@ -55,7 +55,8 @@ class WPBigcommerceProducts
     // @TODO: change this lameness
     public static function shortcode()
     {
-        $options = get_option('wp_bigcommerce_options');
+        $wordpress = new WPBigcommerceWordpressFunctions();
+        $options = $wordpress->getOption('wp_bigcommerce_options');
         //$request = new WPBigcommerceHttpRequest('https://store-3hdjd3.mybigcommerce.com');
         //$request->auth('admin', '1efd11a7e371c75aaebab73d65ce5ef285b98d0b');
 
@@ -64,9 +65,14 @@ class WPBigcommerceProducts
 
         $products = new self($request);
 
-        foreach ($products->fetchProducts() as $product) {
-            $view = new WPBigcommerceView('product', array('product' => $product));
-            echo $view->render();
-        }
+        // foreach ($products->fetchProducts() as $product) {
+        //     $view = new WPBigcommerceView('product', array('product' => $product));
+        //     echo $view->render();
+        // }
+        $view = new WPBigcommerceView('product', array(
+            'product' => $products->fetchProducts()[0],
+            'store_url' => $options['api_url'],
+        ));
+        echo $view->render();
     }
 }

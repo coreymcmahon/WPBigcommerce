@@ -22,6 +22,14 @@ class WPBigcommerceWordpressFunctions {
 		throw new BadFunctionCallException('function get_transient does not exist.');
 	}
 
+	public function deleteTransient($transient)
+	{
+		if (function_exists('delete_transient')) {
+			return delete_transient($transient);
+		}
+		throw new BadFunctionCallException('function delete_transient does not exist.');
+	}
+
 	public function getOption($option, $default = null)
 	{
 		if (function_exists('get_option')) {

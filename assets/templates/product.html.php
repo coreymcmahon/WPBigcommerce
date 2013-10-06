@@ -1,3 +1,19 @@
 <div class="wp-bc-product wp-bc-product-<?php echo $product->id; ?>">
     <div class="wp-bc-product-name"><?php echo $product->name; ?></div>
+    <div class="wp-bc-product-sku"><?php echo $product->sku; ?></div>
+    <div class="wp-bc-product-description"><?php echo substr(strip_tags($product->description), 255); ?></div>
+    <div class="wp-bc-product-price"><?php echo $product->price; ?></div>
+    <div class="wp-bc-product-condition"><?php echo $product->condition; ?></div>
+    <div class="wp-bc-product-warranty"><?php echo $product->warranty; ?></div>
+    <div class="wp-bc-product-rating"><?php echo $product->rating; ?></div>
+    <div class="wp-bc-product-inventory"><?php echo $product->inventory_level; ?></div>
+    <div class="wp-bc-product-weight"><?php echo $product->weight; ?></div>
+    <div class="wp-bc-product-width"><?php echo $product->width; ?></div>
+    <div class="wp-bc-product-height"><?php echo $product->height; ?></div>
+    <div class="wp-bc-product-depth"><?php echo $product->depth; ?></div>
+    <div class="wp-bc-product-rating-total"><?php echo $product->rating_total; ?></div>
+    <div class="wp-bc-product-rating-rating-count"><?php echo $product->rating_count; ?></div>
+    <div class="wp-bc-product-brand"><?php print_r($product->brand, false); ?></div>
+    <div class="wp-bc-product-category"><?php print_r($product->categories, false); ?></div>
+    <a href="<?php echo "{$store_url}{$product->custom_url}"; ?>">Buy Now</a>
 </div>

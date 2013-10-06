@@ -60,6 +60,9 @@ function wp_bigcommerce_settings_field_api_url() {
 function wp_bigcommerce_options_page() {
     if (!current_user_can('manage_options')) wp_die(__( 'You do not have sufficient permissions to access this page.' ));
 
+    // $function = new WPBigcommerceWordpressFunctions();
+    // $function->deleteTransient(WPBigcommerceProducts::$PRODUCTS_TRANSIENT_KEY);
+
     $view = new WPBigcommerceView('settings');
     echo $view->render();
 }
