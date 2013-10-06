@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__FILE__) . '/src/WPBigcommerceRemoteRequest.php');
+require_once(dirname(__FILE__) . '/src/WPBigcommerceWordpressFunctions.php');
 
 if (!class_exists('Services_JSON')) {
     // require JSON handling libraries to support older versions of PHP

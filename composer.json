@@ -3,6 +3,7 @@
         "classmap": ["src/"]
     },
     "require-dev": {
-        "phpunit/phpunit": "*"
+        "phpunit/phpunit": "*",
+        "mockery/mockery": "*"
     }
 }

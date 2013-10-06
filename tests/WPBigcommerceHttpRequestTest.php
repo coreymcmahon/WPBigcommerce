@@ -4,11 +4,11 @@ require_once(dirname(__FILE__) . '/../bootstrap.php');
 
 class WPBigcommerceHttpRequestTest extends PHPUnit_Framework_TestCase {
 
-    private $wpRemoteRequest;
+    private $wordpress;
 
     protected function setUp()
     {
-        $this->wpRemoteRequest = $this->getMock('WPBigcommerceRemoteRequest', array('remoteRequest'));
+        $this->wordpress = Mockery::mock('WPBigcommerceWordpressFunctions');
     }
 
     public function testExecuteGetRequestSucceeds()
@@ -16,12 +16,19 @@ class WPBigcommerceHttpRequestTest extends PHPUnit_Framework_TestCase {
         $domain = 'http://www.google.com';
         $url = '/';
         $htmlResponse = '<html/>';
-        $request = new WPBigcommerceHttpRequest($domain, array(), $this->wpRemoteRequest);
+        $request = new WPBigcommerceHttpRequest($domain, array(), $this->wordpress);
 
-        $this->wpRemoteRequest->expects($this->once())
-            ->method('remoteRequest')
-            ->with($domain . $url)
-            ->will($this->returnValue(
+        $this->wordpress->shouldReceive('wpRemoteRequest')
+            ->once()
+            ->with($domain . $url, array(
+                'method'=> 'GET',
+                'headers' => array(
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'Content-Length' => 0
+                ),
+                'body' => '',
+            ))->andReturn(
                 array(
                     'headers' => array(
                         'date' => 'Tue, 13 Aug 2013 07:57:26 GMT',
@@ -40,9 +47,9 @@ class WPBigcommerceHttpRequestTest extends PHPUnit_Framework_TestCase {
                     'cookies' => array(),
                     'filename' => null,
                 )
-            ));
+            );
 
-        $this->assertEquals($request->get($url), $htmlResponse);
+        $this->assertEquals($htmlResponse, $request->get($url));
     }
 
     public function testUrlParametersCreatedSuccessfully()
@@ -50,11 +57,19 @@ class WPBigcommerceHttpRequestTest extends PHPUnit_Framework_TestCase {
         $domain = 'http://www.google.com';
         $url = '/';
         $parameters = array('n' => 10, 'q' => 'some query');
-        $request = new WPBigcommerceHttpRequest($domain, array(), $this->wpRemoteRequest);
+        $request = new WPBigcommerceHttpRequest($domain, array(), $this->wordpress);
 
-        $this->wpRemoteRequest->expects($this->once())
-            ->method('remoteRequest')
-            ->with($domain . $url . '?n=10&q=some+query');
+        $this->wordpress->shouldReceive('wpRemoteRequest')
+            ->once()
+            ->with($domain . $url . '?n=10&q=some+query', array(
+                'method'=> 'GET',
+                'headers' => array(
+                    'Accept' => 'application/json',
+                    'Content-Type' => 'application/json',
+                    'Content-Length' => 0
+                ),
+                'body' => '',
+            ));
 
         $request->get($url, $parameters);
     }
@@ -63,11 +78,11 @@ class WPBigcommerceHttpRequestTest extends PHPUnit_Framework_TestCase {
     {
         $username = 'admin';
         $password = 'aLDFk3r4e';
-        $request = new WPBigcommerceHttpRequest('http://www.google.com', array(), $this->wpRemoteRequest);
+        $request = new WPBigcommerceHttpRequest('http://www.google.com', array(), $this->wordpress);
         $request->auth($username, $password);
 
-        $this->wpRemoteRequest->expects($this->once())
-            ->method('remoteRequest')
+        $this->wordpress->shouldReceive('wpRemoteRequest')
+            ->once()
             ->with('http://www.google.com/', array(
                 'method'=> 'GET',
                 'headers' => array(
@@ -84,10 +99,10 @@ class WPBigcommerceHttpRequestTest extends PHPUnit_Framework_TestCase {
 
     public function testFailedRequestReturnsNull()
     {
-        $request = new WPBigcommerceHttpRequest('http://www.google.com', array(), $this->wpRemoteRequest);
-        $this->wpRemoteRequest->expects($this->once())
-            ->method('remoteRequest')
-            ->will($this->returnValue(array( 'response' => array ( 'code' => 400 ))));
+        $request = new WPBigcommerceHttpRequest('http://www.google.com', array(), $this->wordpress);
+        $this->wordpress->shouldReceive('wpRemoteRequest')
+            ->once()
+            ->andReturn(array( 'response' => array ( 'code' => 400 )));
 
         $this->assertNull($request->get('/'));
     }

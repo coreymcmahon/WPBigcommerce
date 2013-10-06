@@ -1,0 +1,4 @@
+vendor/
+
+# Lock file should be force committed on stable tag / version releases
+composer.lock

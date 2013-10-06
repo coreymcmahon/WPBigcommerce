@@ -9,18 +9,18 @@ class WPBigcommerceHttpRequest {
 
     private $domain;
     private $headers;
-    private $remoteRequest;
+    private $wordpress;
 
     /**
      * @param $domain
      * @param array $headers
      * @param null $remoteRequest
      */
-    public function __construct($domain, $headers = array(), $remoteRequest = null)
+    public function __construct($domain, $headers = array(), $wordpress = null)
     {
         $this->domain = $domain;
         $this->headers = $headers;
-        $this->remoteRequest = ($remoteRequest !== null) ? $remoteRequest : new WPBigcommerceRemoteRequest();
+        $this->wordpress = ($wordpress !== null) ? $wordpress : new WpBigcommerceWordpressFunctions();
 
         if (!isset($this->headers['Accept'])) $this->headers['Accept'] = self::DEFAULT_ACCEPT;
         if (!isset($this->headers['Content-Type'])) $this->headers['Content-Type'] = self::DEFAULT_CONTENT_TYPE;
@@ -66,7 +66,7 @@ class WPBigcommerceHttpRequest {
      */
     private function execute($url, $method, $body = '')
     {
-        $jsonBody = $body === '' ? '' : toJSON($body);
+        $jsonBody = ($body === '') ? '' : toJSON($body);
         $this->headers['Content-Length'] = strlen($jsonBody);
 
         // Setup variable for wp_remote_post
@@ -76,7 +76,7 @@ class WPBigcommerceHttpRequest {
             'body'      => $jsonBody
         );
 
-        $response = $this->remoteRequest->remoteRequest($this->domain . $url, $request);
+        $response = $this->wordpress->wpRemoteRequest($this->domain . $url, $request);
 
         if ($response['response']['code'] != '200') return null;
 
