@@ -6,10 +6,10 @@
  */
 class WPBigcommerceWordpressFunctions {
 	
-	public function setTransient($transient, $value, $expiration)
+	public function setTransient($transient, $value, $expiration = null)
 	{
 		if (function_exists('set_transient')) {
-			return set_transient($transient);
+			return set_transient($transient, $value, $expiration);
 		}
 		throw new BadFunctionCallException('function set_transient does not exist.');
 	}

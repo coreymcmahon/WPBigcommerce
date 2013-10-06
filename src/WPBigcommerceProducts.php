@@ -64,7 +64,7 @@ class WPBigcommerceProducts
 
         $products = new self($request);
 
-        foreach ($products->fetch() as $product) {
+        foreach ($products->fetchProducts() as $product) {
             $view = new WPBigcommerceView('product', array('product' => $product));
             echo $view->render();
         }
