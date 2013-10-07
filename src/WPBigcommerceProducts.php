@@ -28,6 +28,16 @@ class WPBigcommerceProducts
         $this->wordpress = ($wordpress !== null) ? $wordpress : new WPBigcommerceWordpressFunctions();
     }
 
+    public static function getFields()
+    {
+        return array('image', 'name', 'sku', 'description', 'price', 'condition', 'warranty', 'inventory', 'weight', 'width', 'height', 'depth', 'rating', 'rating-total', 'rating-count', 'brand', 'categories',);
+    }
+
+    public static function getFieldsString()
+    {
+        return implode(',', self::getFields());
+    }
+
     public function testConnection()
     {
         $time = $this->request->get('/api/v2/time.json');
@@ -43,7 +53,32 @@ class WPBigcommerceProducts
         $this->wordpress->setTransient(self::$PRODUCTS_TRANSIENT_KEY, $products, self::$DEFAULT_CACHE_PERIOD);
 
         return $this->parseResponse($products);
+    }
 
+    public function fetchCategories()
+    {
+        if (($transient = $this->wordpress->getTransient(self::$CATEGORIES_TRANSIENT_KEY)) !== false) return $this->parseResponse($transient);
+
+        $categories = $this->request->get('/api/v2/categories.json', array('page' => $this->page, 'limit' => $this->limit));
+
+        $this->wordpress->setTransient(self::$CATEGORIES_TRANSIENT_KEY, $categories, self::$DEFAULT_CACHE_PERIOD);;
+
+        return $this->parseResponse($categories);
+    }
+
+    public function findCategories($ids)
+    {
+        if (!is_array($ids)) $ids = array($ids);
+
+        $allCategories = $this->fetchCategories();
+
+        $categories = array();
+        foreach($allCategories as $category) {
+
+            if (in_array($category->id, $ids)) array_push($categories, $category);
+
+        }
+        return $categories;
     }
 
     private function parseResponse($response)
@@ -52,27 +87,35 @@ class WPBigcommerceProducts
         return $json->decode($response);
     }
 
-    // @TODO: change this lameness
-    public static function shortcode()
+    public static function shortcode($atts, $content = null)
     {
         $wordpress = new WPBigcommerceWordpressFunctions();
         $options = $wordpress->getOption('wp_bigcommerce_options');
-        //$request = new WPBigcommerceHttpRequest('https://store-3hdjd3.mybigcommerce.com');
-        //$request->auth('admin', '1efd11a7e371c75aaebab73d65ce5ef285b98d0b');
+        $atts = $wordpress->shortcodeAtts(array(
+            'products' => '',
+            'fields' => self::getFieldsString(),
+        ), $atts);
 
         $request = new WPBigcommerceHttpRequest($options['api_url']);
         $request->auth($options['api_user'], $options['api_secret']);
 
-        $products = new self($request);
+        $wordpressProducts = new self($request);
 
-        // foreach ($products->fetchProducts() as $product) {
-        //     $view = new WPBigcommerceView('product', array('product' => $product));
-        //     echo $view->render();
-        // }
+        $allProducts = $wordpressProducts->fetchProducts();
+        $ids = explode(',', $atts['products']);
+        if ($atts['products'] === '') $ids = array($allProducts[rand(0, count($allProducts)-1)]->id);
+
+        $products = array();
+        foreach ($allProducts as $product) {
+            if (in_array($product->id, $ids)) array_push($products, $product);
+        }
+
         $view = new WPBigcommerceView('product', array(
-            'product' => $products->fetchProducts()[0],
+            'products' => $products,
             'store_url' => $options['api_url'],
-        ));
+            //'categories' => $wordpressProducts->findCategories($product->categories),
+            'fields' => explode(',', $atts['fields']),
+            ));
         echo $view->render();
     }
 }

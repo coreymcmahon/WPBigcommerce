@@ -3,7 +3,7 @@
 
 ## Todos
 * Get images for products
-* "Insert products" - provide IDs to the shortcode, shortcode displays them
+* <strike>"Insert products" - provide IDs to the shortcode, shortcode displays them</strike>
 * Different templates for products
 * "Only show visible products" option
 * Launch with support for first 250 products ONLY
@@ -11,8 +11,7 @@
 
 ### Someday-maybe list
 * Caching options?...
-  - <250 products: fetch all
-  - >30
+  - <strike><250 products: fetch all</strike>
 
 
 ### Fields
