@@ -7,6 +7,7 @@ class WPBigcommerceProducts
     public static $DEFAULT_CACHE_PERIOD = 86400;
 
     public static $PRODUCTS_TRANSIENT_KEY = 'wp_bigcommerce_products';
+    public static $PRODUCT_IMAGES_TRANSIENT_KEY = 'wp_bigcommerce_product_images';
     public static $CATEGORIES_TRANSIENT_KEY = 'wp_bigcommerce_categories';
 
     /** @var \WpBigcommerceHttpRequest */
@@ -30,7 +31,25 @@ class WPBigcommerceProducts
 
     public static function getFields()
     {
-        return array('image', 'name', 'sku', 'description', 'price', 'condition', 'warranty', 'inventory', 'weight', 'width', 'height', 'depth', 'rating', 'rating-total', 'rating-count', 'brand', 'categories',);
+        return array(
+            'image',
+            'name',
+            'sku',
+            'description',
+            'price',
+            'condition',
+            'warranty',
+            'inventory',
+            'weight',
+            'width',
+            'height',
+            'depth',
+            'rating',
+            'rating-total',
+            'rating-count',
+            'brand',
+            'categories',
+         );
     }
 
     public static function getFieldsString()
@@ -61,9 +80,29 @@ class WPBigcommerceProducts
 
         $categories = $this->request->get('/api/v2/categories.json', array('page' => $this->page, 'limit' => $this->limit));
 
-        $this->wordpress->setTransient(self::$CATEGORIES_TRANSIENT_KEY, $categories, self::$DEFAULT_CACHE_PERIOD);;
+        $this->wordpress->setTransient(self::$CATEGORIES_TRANSIENT_KEY, $categories, self::$DEFAULT_CACHE_PERIOD);
 
         return $this->parseResponse($categories);
+    }
+
+    public function fetchImagesForProducts($ids)
+    {
+        $images = array();
+        foreach ($ids as $id) {
+            $key = self::$PRODUCT_IMAGES_TRANSIENT_KEY . '_id' . $id;
+
+            if (($transient = $this->wordpress->getTransient($key)) !== false) {
+                $images[] = $this->parseResponse($transient);
+                continue;
+            } 
+
+            $productImagesResponse = $this->request->get("/api/v2/products/{$id}/images.json");
+
+            $this->wordpress->setTransient($key, $productImagesResponse, self::$DEFAULT_CACHE_PERIOD);
+
+            $images[] = $this->parseResponse($productImagesResponse);
+        }
+        return $images;
     }
 
     public function findCategories($ids)
