@@ -5,10 +5,27 @@
         <?php if (in_array('name', $fields)): ?>
             <h2 class="wp-bc-product-name"><?php echo $product->name; ?></h2>
         <?php endif; ?>
-        
+
         <?php if (in_array('image', $fields)): ?>
             <div class="wp-bc-product-image">
-                <!-- @TODO: fill this in -->
+                <img src="<?php echo "{$store_url}/product_images/{$product->image->image_file}"; ?>" 
+                     alt="<?php echo $product->name; ?>" 
+                     <?php 
+
+                     if (!empty($image_width)) {
+                        echo "width=\"{$image_width}\" ";
+                     }
+                     if (!empty($image_height)) {
+                        echo "height=\"{$image_height}\" ";
+                     }
+
+                     echo "style=\"";
+                     if (!empty($image_width)) echo "width: {$image_width}px;";
+                     if (!empty($image_height)) echo "height: {$image_height}px;";
+                     echo "\"";
+
+                     ?>
+                />
             </div>
         <?php endif; ?>
 

@@ -116,7 +116,7 @@ class WPBigcommerceProductsTest extends PHPUnit_Framework_TestCase {
         foreach ($ids as $id) {
             $this->wordpress->shouldReceive('getTransient')
                 ->once()
-                ->with(WPBigcommerceProducts::$PRODUCT_IMAGES_TRANSIENT_KEY . '_id' . $id)
+                ->with(WPBigcommerceProducts::$PRODUCT_IMAGES_TRANSIENT_KEY . "_id{$id}")
                 ->andReturn($this->productImagesApiResponse);
         }
 
@@ -125,6 +125,18 @@ class WPBigcommerceProductsTest extends PHPUnit_Framework_TestCase {
         $this->assertCount(2, $images);
         $this->assertEquals(250, $images[0][0]->id);
         $this->assertEquals(250, $images[1][0]->id);
+    }
+
+    public function testFindImageForProduct()
+    {
+        $id = 32;
+        $this->wordpress->shouldReceive('getTransient')
+            ->once()
+            ->with(WPBigcommerceProducts::$PRODUCT_IMAGES_TRANSIENT_KEY . "_id{$id}")
+            ->andReturn($this->productImagesApiResponse);
+
+        $image = $this->products->findImageForProduct($id);
+        $this->assertTrue($image->is_thumbnail);
     }
 
     public function testShortcode()

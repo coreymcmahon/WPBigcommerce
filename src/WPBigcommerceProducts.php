@@ -120,6 +120,18 @@ class WPBigcommerceProducts
         return $categories;
     }
 
+    public function findImageForProduct($id)
+    {
+        $images = $this->fetchImagesForProducts(array($id));
+
+        if (!empty($images[0])) {
+            foreach ($images[0] as $image) {
+                if ($image->is_thumbnail) return $image;
+            }
+        }
+        return null;
+    }
+
     private function parseResponse($response)
     {
         $json = new Services_JSON();
@@ -133,6 +145,8 @@ class WPBigcommerceProducts
         $atts = $wordpress->shortcodeAtts(array(
             'products' => '',
             'fields' => self::getFieldsString(),
+            'image_width' => '200',
+            'image_height' => '',
         ), $atts);
 
         $request = new WPBigcommerceHttpRequest($options['api_url']);
@@ -149,11 +163,17 @@ class WPBigcommerceProducts
             if (in_array($product->id, $ids)) array_push($products, $product);
         }
 
+        foreach ($products as &$product) {
+            $product->image = $wordpressProducts->findImageForProduct($product->id);
+        }
+
         $view = new WPBigcommerceView('product', array(
             'products' => $products,
             'store_url' => $options['api_url'],
             //'categories' => $wordpressProducts->findCategories($product->categories),
             'fields' => explode(',', $atts['fields']),
+            'image_width' => $atts['image_width'],
+            'image_height' => $atts['image_height'],
             ));
         echo $view->render();
     }
