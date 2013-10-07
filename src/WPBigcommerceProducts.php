@@ -21,8 +21,13 @@ class WPBigcommerceProducts
      * @param null $page
      * @param null $limit
      */
-    public function __construct($request, $page = null, $limit = null, $wordpress = null)
+    public function __construct($request = null, $page = null, $limit = null, $wordpress = null)
     {
+        if ($request === null) {
+            $wordpress = new WPBigcommerceWordpressFunctions();
+            $options = $wordpress->getOption('wp_bigcommerce_options');
+            $request = new WPBigcommerceHttpRequest($options['api_url']);
+        }
         $this->request = $request;
         $this->page  = ($page  !== null) ? $page  : 1;
         $this->limit = ($limit !== null) ? $limit : 250;
