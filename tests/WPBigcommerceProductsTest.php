@@ -16,7 +16,11 @@ class WPBigcommerceProductsTest extends PHPUnit_Framework_TestCase {
             null,
             $this->wordpress
         );
+    }
 
+    public function tearDown()
+    {
+        Mockery::close();
     }
 
     public function testFetchProductsWithCacheMiss()
@@ -137,6 +141,33 @@ class WPBigcommerceProductsTest extends PHPUnit_Framework_TestCase {
 
         $image = $this->products->findImageForProduct($id);
         $this->assertTrue($image->is_thumbnail);
+    }
+
+    public function testDumpTransients()
+    {
+        $this->wordpress->shouldReceive('getTransient')
+            ->once()
+            ->with(WPBigcommerceProducts::$PRODUCTS_TRANSIENT_KEY)
+            ->andReturn($this->productsApiResponse);
+
+        $rawProducts = json_decode($this->productsApiResponse);
+
+        foreach ($rawProducts as $product) {
+            $this->wordpress->shouldReceive('deleteTransient')
+                ->once()
+                ->with(WPBigcommerceProducts::$PRODUCT_IMAGES_TRANSIENT_KEY . "_id{$product->id}");
+        }
+
+        $this->wordpress->shouldReceive('deleteTransient')
+            ->once()
+            ->with(WPBigcommerceProducts::$PRODUCTS_TRANSIENT_KEY);
+
+        $this->wordpress->shouldReceive('deleteTransient')
+            ->once()
+            ->with(WPBigcommerceProducts::$CATEGORIES_TRANSIENT_KEY);
+
+        $this->products->dumpTransients();
+
     }
 
     public function testShortcode()

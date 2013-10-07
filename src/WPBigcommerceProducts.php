@@ -132,6 +132,16 @@ class WPBigcommerceProducts
         return null;
     }
 
+    public function dumpTransients()
+    {
+        $products = $this->parseResponse($this->wordpress->getTransient(self::$PRODUCTS_TRANSIENT_KEY));
+        foreach ($products as $product) {
+            $this->wordpress->deleteTransient(self::$PRODUCT_IMAGES_TRANSIENT_KEY . "_id{$product->id}");
+        }
+        $this->wordpress->deleteTransient(self::$PRODUCTS_TRANSIENT_KEY);
+        $this->wordpress->deleteTransient(self::$CATEGORIES_TRANSIENT_KEY);
+    }
+
     private function parseResponse($response)
     {
         $json = new Services_JSON();
