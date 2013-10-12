@@ -27,6 +27,7 @@ class WPBigcommerceProducts
             $wordpress = new WPBigcommerceWordpressFunctions();
             $options = $wordpress->getOption('wp_bigcommerce_options');
             $request = new WPBigcommerceHttpRequest($options['api_url']);
+            $request->auth($options['api_user'], $options['api_secret']);
         }
         $this->request = $request;
         $this->page  = ($page  !== null) ? $page  : 1;

@@ -9,6 +9,10 @@ if (!class_exists('Services_JSON')) {
 
 require_once(dirname(__FILE__) . '/src/WPBigcommerceHttpRequest.php');
 
+require_once(dirname(__FILE__) . '/src/WPBigcommerceTransientCache.php');
+
+require_once(dirname(__FILE__) . '/src/WPBigcommerceApi.php');
+
 require_once(dirname(__FILE__) . '/src/WPBigcommerceProducts.php');
 
 require_once(dirname(__FILE__) . '/src/WPBigcommerceView.php');
