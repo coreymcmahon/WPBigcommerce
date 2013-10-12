@@ -3,10 +3,9 @@
 class WPBigcommerceApi {
 
     private $request;
-    private $cacher;
     private $json;
 
-    public function __construct($request = null, $cacher = null, $json = null)
+    public function __construct($request = null, $json = null)
     {
         if ($request === null) {
             $wordpress = new WPBigcommerceWordpressFunctions;
@@ -16,9 +15,6 @@ class WPBigcommerceApi {
             $request->auth($options['api_user'], $options['api_secret']);
         }
         $this->request = $request;
-
-        if (!$cacher) $cacher = new WPBigcommerceTransientCacher;
-        $this->cacher = $cacher;
         
         if (!$json) $json = new Services_JSON();
         $this->json = $json;
@@ -30,16 +26,22 @@ class WPBigcommerceApi {
         return $time !== null;
     }
 
-    public function getProducts($limit = 250, $page = 1)
+    public function getProducts($page = 1, $limit = 250)
     {
         $products = $this->request->get('/api/v2/products.json', array('page' => $page, 'limit' => $limit));
         return $this->json->decode($products);
     }
 
-    public function getCategories($limit = 250, $page = 1)
+    public function getCategories($page = 1, $limit = 250)
     {
         $categories = $this->request->get('/api/v2/categories.json', array('page' => $page, 'limit' => $limit));
         return $this->json->decode($categories);
+    }
+
+    public function getCategory($id)
+    {
+        $category = $this->request->get('/api/v2/categories/{$id}.json');
+        return $this->json->decode($category);
     }
 
     public function getProductsByIds($ids = array())

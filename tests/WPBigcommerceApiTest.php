@@ -8,8 +8,7 @@ class WPBigcommerceApiTest extends PHPUnit_Framework_TestCase {
     public function setUp()
     {
         $this->request = Mockery::mock('WPBigcommerceHttpRequest');
-        $this->cacher = Mockery::mock('WPBigcommerceTransientCacher');
-        $this->api = new WPBigcommerceApi($this->request, $this->cacher);
+        $this->api = new WPBigcommerceApi($this->request);
     }
 
     public function tearDown()

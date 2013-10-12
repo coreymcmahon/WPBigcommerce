@@ -2,18 +2,18 @@
 
 
 ## Todos
-* Make cache "dumpable"
-* Add categories to product listing
+* ~~Make cache "dumpable"~~
+* ~~Add categories to product listing~~
 * ~~Get images for products~~
 * ~~"Insert products" - provide IDs to the shortcode, shortcode displays them~~
-* Different templates for products
-* "Only show visible products" option
-* Launch with support for first 250 products ONLY
+* Only include VISIBLE PRODUCTS
 
 
 ### Someday-maybe list
 * Caching options?...
   - <strike><250 products: fetch all</strike>
+* Different templates for products
+* User interface for selecting which products to display
 
 
 ### Fields

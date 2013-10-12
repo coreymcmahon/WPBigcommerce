@@ -1,7 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../bootstrap.php');
-
 class WPBigcommerceHttpRequest {
 
     const DEFAULT_ACCEPT       = 'application/json';

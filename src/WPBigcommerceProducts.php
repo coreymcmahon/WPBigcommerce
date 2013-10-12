@@ -1,61 +1,38 @@
 <?php
 
-require_once(dirname(__FILE__) . '/../bootstrap.php');
-
 class WPBigcommerceProducts
 {
-    public static $DEFAULT_CACHE_PERIOD = 86400;
-
     public static $PRODUCTS_TRANSIENT_KEY = 'wp_bigcommerce_products';
     public static $PRODUCT_IMAGES_TRANSIENT_KEY = 'wp_bigcommerce_product_images';
     public static $CATEGORIES_TRANSIENT_KEY = 'wp_bigcommerce_categories';
 
-    /** @var \WpBigcommerceHttpRequest */
-    private $request;
-    private $limit;
-    private $page;
+    /** @var \WpBigcommerceApi */
+    private $api;
+    /** @var \WpBigcommerceTransientCacher */
+    private $cacher;
+    /** @var \WpBigcommerceWordpressFunctions */
     private $wordpress;
 
     /**
-     * @param WpBigcommerceHttpRequest $request
-     * @param null $page
-     * @param null $limit
+     * @param \WpBigcommerceApi $api
+     * @param \WpBigcommerceTransientCacher $cacher
+     * @param \WpBigcommerceWordpressFunctions $wordpress
      */
-    public function __construct($request = null, $page = null, $limit = null, $wordpress = null)
+    public function __construct($api = null, $cacher = null, $wordpress = null)
     {
-        if ($request === null) {
-            $wordpress = new WPBigcommerceWordpressFunctions();
-            $options = $wordpress->getOption('wp_bigcommerce_options');
-            $request = new WPBigcommerceHttpRequest($options['api_url']);
-            $request->auth($options['api_user'], $options['api_secret']);
-        }
-        $this->request = $request;
-        $this->page  = ($page  !== null) ? $page  : 1;
-        $this->limit = ($limit !== null) ? $limit : 250;
-        $this->wordpress = ($wordpress !== null) ? $wordpress : new WPBigcommerceWordpressFunctions();
+        if ($api === null) $api = new WPBigcommerceApi;
+        $this->api = $api;
+
+        if ($cacher === null) $cacher = new WPBigcommerceTransientCacher;
+        $this->cacher = $cacher;
+
+        if ($wordpress === null) $wordpress = new WPBigcommerceWordpressFunctions;
+        $this->wordpress = $wordpress;
     }
 
     public static function getFields()
     {
-        return array(
-            'image',
-            'name',
-            'sku',
-            'description',
-            'price',
-            'condition',
-            'warranty',
-            'inventory',
-            'weight',
-            'width',
-            'height',
-            'depth',
-            'rating',
-            'rating-total',
-            'rating-count',
-            'brand',
-            'categories',
-         );
+        return array('image', 'name', 'sku', 'description', 'price', 'condition', 'warranty', 'inventory', 'weight', 'width', 'height', 'depth', 'rating', 'rating-total', 'rating-count', 'brand', 'categories',);
     }
 
     public static function getFieldsString()
@@ -65,98 +42,84 @@ class WPBigcommerceProducts
 
     public function testConnection()
     {
-        $time = $this->request->get('/api/v2/time.json');
-        return $time !== null;
+        return $this->api->testConnection();
     }
 
-    public function fetchProducts()
+    public function findProduct($id)
     {
-        if (($transient = $this->wordpress->getTransient(self::$PRODUCTS_TRANSIENT_KEY)) !== false) return $this->parseResponse($transient);
+        $key = self::$PRODUCTS_TRANSIENT_KEY;
 
-        $products = $this->request->get('/api/v2/products.json', array('page' => $this->page, 'limit' => $this->limit));
+        $product = $this->getItemFromCache($key, $id);
+        if (!empty($product)) return $product;
 
-        $this->wordpress->setTransient(self::$PRODUCTS_TRANSIENT_KEY, $products, self::$DEFAULT_CACHE_PERIOD);
+        $product = $this->api->getProductsByIds($id);
+        if (empty($product)) return null;
 
-        return $this->parseResponse($products);
+        $this->addItemToCache($key, $id, $product[0]);
+        return $product[0];
     }
 
-    public function fetchCategories()
+    public function findCategory($id)
     {
-        if (($transient = $this->wordpress->getTransient(self::$CATEGORIES_TRANSIENT_KEY)) !== false) return $this->parseResponse($transient);
+        $key = self::$CATEGORIES_TRANSIENT_KEY;
 
-        $categories = $this->request->get('/api/v2/categories.json', array('page' => $this->page, 'limit' => $this->limit));
+        $category = $this->getItemFromCache($key, $id);
+        if (!empty($category)) return $category;
 
-        $this->wordpress->setTransient(self::$CATEGORIES_TRANSIENT_KEY, $categories, self::$DEFAULT_CACHE_PERIOD);
+        $category = $this->api->getCategory($id);
+        if (empty($category)) return null;
 
-        return $this->parseResponse($categories);
+        $this->addItemToCache($key, $id, $category);
+        return $category;
     }
 
-    public function fetchImagesForProducts($ids)
+    public function findProductImage($id)
     {
-        $images = array();
-        foreach ($ids as $id) {
-            $key = self::$PRODUCT_IMAGES_TRANSIENT_KEY . '_id' . $id;
+        $key = self::$PRODUCT_IMAGES_TRANSIENT_KEY;
 
-            if (($transient = $this->wordpress->getTransient($key)) !== false) {
-                $images[] = $this->parseResponse($transient);
-                continue;
-            } 
+        $image = $this->getItemFromCache($key, $id);
+        if (!empty($image)) return $image;
 
-            $productImagesResponse = $this->request->get("/api/v2/products/{$id}/images.json");
+        $image = $this->api->getCategory($id);
+        if (empty($image)) return null;
 
-            $this->wordpress->setTransient($key, $productImagesResponse, self::$DEFAULT_CACHE_PERIOD);
-
-            $images[] = $this->parseResponse($productImagesResponse);
-        }
-        return $images;
-    }
-
-    public function findCategories($ids)
-    {
-        if (!is_array($ids)) $ids = array($ids);
-
-        $allCategories = $this->fetchCategories();
-
-        $categories = array();
-        foreach($allCategories as $category) {
-
-            if (in_array($category->id, $ids)) array_push($categories, $category);
-
-        }
-        return $categories;
-    }
-
-    public function findImageForProduct($id)
-    {
-        $images = $this->fetchImagesForProducts(array($id));
-
-        if (!empty($images[0])) {
-            foreach ($images[0] as $image) {
-                if ($image->is_thumbnail) return $image;
-            }
-        }
-        return null;
+        $this->addItemToCache($key, $id, $image);
+        return $image;
     }
 
     public function dumpTransients()
     {
-        $products = $this->parseResponse($this->wordpress->getTransient(self::$PRODUCTS_TRANSIENT_KEY));
-        foreach ($products as $product) {
-            $this->wordpress->deleteTransient(self::$PRODUCT_IMAGES_TRANSIENT_KEY . "_id{$product->id}");
+        $keys = array(
+            self::$PRODUCTS_TRANSIENT_KEY,
+            self::$PRODUCT_IMAGES_TRANSIENT_KEY,
+            self::$CATEGORIES_TRANSIENT_KEY,
+        );
+        foreach ($keys as $key) {
+            $ids = explode(',', $this->cacher->get($key));
+            foreach ($ids as $id)
+                if (!empty($id)) $this->cacher->clear("{$key}_{$id}");
+
+            $this->cacher->clear($key);
         }
-        $this->wordpress->deleteTransient(self::$PRODUCTS_TRANSIENT_KEY);
-        $this->wordpress->deleteTransient(self::$CATEGORIES_TRANSIENT_KEY);
     }
 
-    private function parseResponse($response)
+    public function getItemFromCache($key, $id)
     {
-        $json = new Services_JSON();
-        return $json->decode($response);
+        return $this->cacher->get("{$key}_{$id}", '');
+    }
+
+    public function addItemToCache($key, $id, $obj)
+    {
+        $this->cacher->set("{$key}_{$id}", $obj);
+        $keys = $this->cacher->get("{$key}", '');
+        return $this->cacher->set("{$key}", "{$keys}{$id},");
     }
 
     public static function shortcode($atts, $content = null)
     {
-        $wordpress = new WPBigcommerceWordpressFunctions();
+        $wpBigcommerceProducts = new self;
+        $wordpress = new WpBigcommerceWordpressFunctions;
+
         $options = $wordpress->getOption('wp_bigcommerce_options');
         $atts = $wordpress->shortcodeAtts(array(
             'products' => '',
@@ -165,32 +128,29 @@ class WPBigcommerceProducts
             'image_height' => '',
         ), $atts);
 
-        $request = new WPBigcommerceHttpRequest($options['api_url']);
-        $request->auth($options['api_user'], $options['api_secret']);
-
-        $wordpressProducts = new self($request);
-
-        $allProducts = $wordpressProducts->fetchProducts();
         $ids = explode(',', $atts['products']);
-        if ($atts['products'] === '') $ids = array($allProducts[rand(0, count($allProducts)-1)]->id);
-
+        
         $products = array();
-        foreach ($allProducts as $product) {
-            if (in_array($product->id, $ids)) array_push($products, $product);
-        }
+        foreach ($ids as $id)
+            $products[] = $wpBigcommerceProducts->findProduct($id);
 
         foreach ($products as &$product) {
-            $product->image = $wordpressProducts->findImageForProduct($product->id);
+            $product->image = $wpBigcommerceProducts->findProductImage($product->id);
+            
+            $categories = $product->categories;
+            $product->categories = [];
+            foreach ($categories as $category) {
+                $product->categories[] = $wpBigcommerceProducts->findCategory($category);
+            }
         }
 
         $view = new WPBigcommerceView('product', array(
             'products' => $products,
             'store_url' => $options['api_url'],
-            //'categories' => $wordpressProducts->findCategories($product->categories),
             'fields' => explode(',', $atts['fields']),
             'image_width' => $atts['image_width'],
             'image_height' => $atts['image_height'],
-            ));
+        ));
         echo $view->render();
     }
 }
