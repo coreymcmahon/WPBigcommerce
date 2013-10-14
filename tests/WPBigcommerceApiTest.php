@@ -26,6 +26,18 @@ class WPBigcommerceApiTest extends PHPUnit_Framework_TestCase {
         $this->assertTrue($this->api->testConnection());
     }
 
+    public function testGetStoreInfo()
+    {
+        $this->request->shouldReceive('get')
+            ->once()
+            ->with('/api/v2/store.json')
+            ->andReturn('{"id":"48whbcr","domain":"thetestingstore.mybigcommerce.com","name":"thetestingstore","address":"Acme Widgets\r\n123 Widget Street\r\nAcmeville, AC 12345","phone":"+8400000000","admin_email":"some+guy@gmail.com","order_email":"some+guy@gmail.com","language":"en","currency":"VND","currency_symbol":"\u20ab","decimal_separator":".","thousands_separator":",","decimal_places":2,"currency_symbol_location":"left","weight_units":"LBS","dimension_units":"Inches"}');
+
+        $store = $this->api->getStoreInfo();
+
+        $this->assertEquals('48whbcr', $store->id);
+    }
+
     public function testGetProducts()
     {
         $ids = array(1,2);

@@ -2,6 +2,7 @@
 
 class WPBigcommerceProducts
 {
+    public static $STORE_INFO_TRANSIENT_KEY = 'wp_bigcommerce_store';
     public static $PRODUCTS_TRANSIENT_KEY = 'wp_bigcommerce_products';
     public static $PRODUCT_IMAGES_TRANSIENT_KEY = 'wp_bigcommerce_product_images';
     public static $CATEGORIES_TRANSIENT_KEY = 'wp_bigcommerce_categories';
@@ -32,7 +33,7 @@ class WPBigcommerceProducts
 
     public static function getFields()
     {
-        return array('image', 'name', 'sku', 'description', 'price', 'condition', 'warranty', 'inventory', 'weight', 'width', 'height', 'depth', 'rating', 'rating-total', 'rating-count', 'brand', 'categories',);
+        return array('image', 'name', 'sku', 'description', 'price', 'condition', 'warranty', 'inventory', 'weight', 'width', 'height', 'depth', 'rating', 'rating-total', 'rating-count', 'brand', 'categories', 'link');
     }
 
     public static function getFieldsString()
@@ -43,6 +44,20 @@ class WPBigcommerceProducts
     public function testConnection()
     {
         return $this->api->testConnection();
+    }
+
+    public function findStoreInfo()
+    {
+        $key = self::$STORE_INFO_TRANSIENT_KEY;
+
+        $info = $this->cacher->get($key);
+        if (!empty($info)) return $info;
+
+        $info = $this->api->getStoreInfo();
+        if (empty($info)) return null;
+
+        $this->cacher->set($key, $info);
+        return $info;
     }
 
     public function findProduct($id)
@@ -80,7 +95,7 @@ class WPBigcommerceProducts
         $image = $this->getItemFromCache($key, $id);
         if (!empty($image)) return $image;
 
-        $image = $this->api->getCategory($id);
+        $image = $this->api->getProductImage($id);
         if (empty($image)) return null;
 
         $this->addItemToCache($key, $id, $image);
@@ -145,6 +160,7 @@ class WPBigcommerceProducts
         }
 
         $view = new WPBigcommerceView('product', array(
+            'store' => $wpBigcommerceProducts->findStoreInfo(),
             'products' => $products,
             'store_url' => $options['api_url'],
             'fields' => explode(',', $atts['fields']),

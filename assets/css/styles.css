@@ -1,0 +1,4 @@
+.wp-bc-product-image { float:left; }
+.wp-bc-label, .wp-bc-value { width: 30%; display: inline-block; }
+.wp-bc-label { font-weight: bold; text-align: right; }
+.wp-bc-value { clear: right; }

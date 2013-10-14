@@ -26,6 +26,12 @@ class WPBigcommerceApi {
         return $time !== null;
     }
 
+    public function getStoreInfo()
+    {
+        $store = $this->request->get('/api/v2/store.json');
+        return $this->json->decode($store);
+    }
+
     public function getProducts($page = 1, $limit = 250)
     {
         $products = $this->request->get('/api/v2/products.json', array('page' => $page, 'limit' => $limit));

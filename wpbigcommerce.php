@@ -12,6 +12,8 @@ require_once(dirname(__FILE__) . '/bootstrap.php');
 
 define('WPBC_PLUGIN_IDENTIFIER', md5(__FILE__));
 
+define('WPBC_PLUGIN_PATH', plugins_url(str_replace(dirname(dirname(__FILE__)), '', dirname(__FILE__))));
+
 add_shortcode( 'wpbigcommerce', array( 'WPBigcommerceProducts', 'shortcode' ) );
 
 if (is_admin()) {
@@ -19,12 +21,14 @@ if (is_admin()) {
     add_action('admin_menu', 'wp_bigcommerce_menu');
 }
 
-function wp_bigcommerce_menu() {
+function wp_bigcommerce_menu() 
+{
     // add_options_page( $page_title, $menu_title, $capability, $menu_slug, $function)
     add_options_page('WP Bigcommerce', 'WP Bigcommerce', 'manage_options', WPBC_PLUGIN_IDENTIFIER, 'wp_bigcommerce_options_page'); // @TODO: menu_slug? should this be something else?
 }
 
-function wp_bigcommerce_init() {
+function wp_bigcommerce_init() 
+{
     // register_setting( $option_group, $option_name, $sanitize_callback )
     register_setting('wp_bigcommerce_options', 'wp_bigcommerce_options');
 
@@ -38,26 +42,31 @@ function wp_bigcommerce_init() {
     add_settings_field('wp_bc_api_url',    'Store URL', 'wp_bigcommerce_settings_field_api_url',    WPBC_PLUGIN_IDENTIFIER, 'wp_bigcommerce_options_main');
 }
 
-function wp_bigcommerce_settings_section_main() {
+function wp_bigcommerce_settings_section_main() 
+{
     /* add text in here */
 }
 
-function wp_bigcommerce_settings_field_api_user() {
+function wp_bigcommerce_settings_field_api_user() 
+{
     $options = get_option('wp_bigcommerce_options');
     echo "<input id='wp_bc_api_user' name='wp_bigcommerce_options[api_user]' size='40' type='text' value='" . $options['api_user'] . "' placeholder='Enter the username for an API user here.' />";
 }
 
-function wp_bigcommerce_settings_field_api_secret() {
+function wp_bigcommerce_settings_field_api_secret() 
+{
     $options = get_option('wp_bigcommerce_options');
     echo "<input id='wp_bc_api_secret' name='wp_bigcommerce_options[api_secret]' size='40' type='text' value='" . $options['api_secret'] . "' placeholder='Enter the secret key for the API user here.' />";
 }
 
-function wp_bigcommerce_settings_field_api_url() {
+function wp_bigcommerce_settings_field_api_url() 
+{
     $options = get_option('wp_bigcommerce_options');
     echo "<input id='wp_bc_api_url' name='wp_bigcommerce_options[api_url]' size='40' type='text' value='" . $options['api_url'] . "' placeholder='Enter the URL for your Bigcommerce API here.' />";
 }
 
-function wp_bigcommerce_settings_field_api_status() {
+function wp_bigcommerce_settings_field_api_status() 
+{
     $options = get_option('wp_bigcommerce_options');
     $apiUser = $options['api_user'];
     $apiSecret = $options['api_secret'];
@@ -75,13 +84,17 @@ function wp_bigcommerce_settings_field_api_status() {
     }
 }
 
-
-function wp_bigcommerce_options_page() {
+function wp_bigcommerce_options_page() 
+{
     if (!current_user_can('manage_options')) wp_die(__( 'You do not have sufficient permissions to access this page.' ));
-
-    // $function = new WPBigcommerceWordpressFunctions();
-    // $function->deleteTransient(WPBigcommerceProducts::$PRODUCTS_TRANSIENT_KEY);
-
     $view = new WPBigcommerceView('settings');
     echo $view->render();
 }
+
+// 
+add_action( 'wp_enqueue_scripts', 'wp_bigcommerce_enqueue_assets' );
+function wp_bigcommerce_enqueue_assets() 
+{
+    wp_enqueue_style('wp_bigcommerce_style_css', WPBC_PLUGIN_PATH.'/assets/css/styles.css');
+}
+
