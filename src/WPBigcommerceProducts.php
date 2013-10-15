@@ -31,9 +31,34 @@ class WPBigcommerceProducts
         $this->wordpress = $wordpress;
     }
 
-    public static function getFields()
+    public static function getFields($all = false)
     {
-        return array('image', 'name', 'sku', 'description', 'price', 'condition', 'warranty', 'inventory', 'weight', 'width', 'height', 'depth', 'rating', 'rating-total', 'rating-count', 'brand', 'categories', 'link');
+        $defaults = [
+            'name',
+            'image',
+            'sku',
+            'price',
+            'warranty',
+            'rating',
+            'weight',
+            'categories',
+            'condition',
+            'link',
+            'description_snippet',
+        ];
+        $others = [
+            'availability_description',
+            'retail_price',
+            'sale_price',
+            'is_free_shipping',
+            'upc',
+            'width',
+            'height',
+            'depth',
+            'description',
+            'description_html',
+        ];
+        return ($all ? array_merge($defaults, $others) : $defaults);
     }
 
     public static function getFieldsString()
@@ -153,6 +178,7 @@ class WPBigcommerceProducts
             $product->image = $wpBigcommerceProducts->findProductImage($product->id);
             
             $categories = $product->categories;
+            var_dump($categories);
             $product->categories = [];
             foreach ($categories as $category) {
                 $product->categories[] = $wpBigcommerceProducts->findCategory($category);

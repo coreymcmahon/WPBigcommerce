@@ -16,26 +16,30 @@
 * User interface for selecting which products to display
 
 
-### Fields
-* Id
-* Name
-* Sku
-* Description
-* Price / Cost price / Retail price / Sale price
-* Is featured?
-* Availability
-* Condition
-* Price
-* Warranty
-* Rating
-* Url
-* Inventory level
-* Weight, Width, Height, Depth
-* Rating total / Rating count
-* Brand
-* Category / categories
-* Condition
-* Custom Url / Url
+### Included Fields
+#### Shown by Default
+* name
+* image
+* sku
+* description
+* price
+* warranty
+* rating
+* categories
+* condition
+* link
+* description_html
+
+#### Available (but not shown by default)
+* availability_description
+* retail_price
+* sale_price
+* is_free_shipping
+* upc
+* weight
+* width
+* height
+* depth
 
 
 ## Tests

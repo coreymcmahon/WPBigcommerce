@@ -27,7 +27,7 @@ class WPBigcommerceView
     {
         ob_start();
         extract($this->data);
-        include($this->getFullTemplatePath()); // @TODO: test this... best approach?
+        include($this->getFullTemplatePath());
         return ob_get_clean();
     }
 }

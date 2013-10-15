@@ -46,7 +46,7 @@ class WPBigcommerceApi {
 
     public function getCategory($id)
     {
-        $category = $this->request->get('/api/v2/categories/{$id}.json');
+        $category = $this->request->get("/api/v2/categories/{$id}.json");
         return $this->json->decode($category);
     }
 
