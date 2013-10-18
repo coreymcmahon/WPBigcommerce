@@ -178,7 +178,6 @@ class WPBigcommerceProducts
             $product->image = $wpBigcommerceProducts->findProductImage($product->id);
             
             $categories = $product->categories;
-            var_dump($categories);
             $product->categories = [];
             foreach ($categories as $category) {
                 $product->categories[] = $wpBigcommerceProducts->findCategory($category);
