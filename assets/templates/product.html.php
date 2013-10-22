@@ -99,7 +99,13 @@
         <?php if (in_array('rating', $fields)): ?>
             <div class="wp-bc-product-rating">
                 <div class="wp-bc-label">Rating:</div>
-                <div class="wp-bc-value"><?php echo $product->rating; ?></div>
+                <div class="wp-bc-value">
+                    <?php if ($product->rating_count == 0): ?>
+                    <span class="wp-bc-rating-total wp-bc-rating-no-ratings">No ratings.</span>
+                    <?php else: ?>
+                    <span class="wp-bc-rating-total"><?php echo $product->rating_total; ?>/5</span>
+                    <?php endif; ?>
+                </div>
             </div>
         <?php endif; ?>
 
