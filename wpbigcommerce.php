@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: WP Bigcommerce
-Plugin URI: http://www.coreymcmahon.com/
+Plugin URI: http://www.commercecoders.com/bigcommerce/wordpress-plugin.html
 Description: TBA
 Version: 1.0
 Author: Corey McMahon
-Author URI: http://www.coreymcmahon.com/
+Author URI: http://www.commercecoders.com/about.html
 */
 
 require_once(dirname(__FILE__) . '/bootstrap.php');
@@ -30,7 +30,7 @@ function wp_bigcommerce_menu()
 function wp_bigcommerce_init() 
 {
     // register_setting( $option_group, $option_name, $sanitize_callback )
-    register_setting('wp_bigcommerce_options', 'wp_bigcommerce_options');
+    register_setting('wp_bigcommerce_options', 'wp_bigcommerce_options', 'wp_bigcommerce_options_validate');
 
     // add_settings_section( $id, $title, $callback, $page )
     add_settings_section('wp_bigcommerce_options_main', 'Store API Settings', 'wp_bigcommerce_settings_section_main', WPBC_PLUGIN_IDENTIFIER);
@@ -40,6 +40,28 @@ function wp_bigcommerce_init()
     add_settings_field('wp_bc_api_user',   'Username',  'wp_bigcommerce_settings_field_api_user',   WPBC_PLUGIN_IDENTIFIER, 'wp_bigcommerce_options_main');
     add_settings_field('wp_bc_api_secret', 'Secret',    'wp_bigcommerce_settings_field_api_secret', WPBC_PLUGIN_IDENTIFIER, 'wp_bigcommerce_options_main');
     add_settings_field('wp_bc_api_url',    'Store URL', 'wp_bigcommerce_settings_field_api_url',    WPBC_PLUGIN_IDENTIFIER, 'wp_bigcommerce_options_main');
+}
+
+function wp_bigcommerce_options_validate($input)
+{
+    // convert to lower case to make string comparisons easier
+    $apiUrl = strtolower($input['api_url']);
+    
+    // strip out the API endpoint info, this is handled inside the WPBigcommerceApi class
+    $apiUrl = str_replace('/api/v2', '', $apiUrl);
+    
+    // make sure we're using HTTPS
+    $apiUrl = str_replace('http://', 'https://', $apiUrl);
+    if (strpos($apiUrl, 'https://') === false) $apiUrl = 'https://' . $apiUrl;
+
+    // remove any trailing slash
+    $apiUrl = rtrim($apiUrl, '/');
+
+    return array(
+        'api_user' => $input['api_user'],
+        'api_secret' => $input['api_secret'],
+        'api_url' => $apiUrl,
+    );
 }
 
 function wp_bigcommerce_settings_section_main() 
