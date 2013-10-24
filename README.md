@@ -33,7 +33,6 @@ Where ```72,73,81``` is the list of product IDs you'd like displayed. You can al
 ```
 
 ### Available Fields
-#### Shown by Default
 * name <sup>\*</sup>
 * image <sup>\*</sup>
 * sku <sup>\*</sup>

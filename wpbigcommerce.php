@@ -120,3 +120,5 @@ function wp_bigcommerce_enqueue_assets()
     wp_enqueue_style('wp_bigcommerce_style_css', WPBC_PLUGIN_PATH.'/assets/css/styles.css');
 }
 
+// include presstrend analytics
+require_once(dirname(__FILE__) . '/presstrends.php');
