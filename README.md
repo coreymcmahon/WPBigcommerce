@@ -1,11 +1,5 @@
 # Wordpress Bigcommerce Products Plugin
 
-### Someday-maybe list
-* Caching options?...
-  - <strike><250 products: fetch all</strike>
-* Different templates for products
-* User interface for selecting which products to display
-
 
 ## Installation
 Clone the repository into your ```wordpress-install/wp-content/plugins``` directory as such:
@@ -76,3 +70,8 @@ https://www.yourstorename.com/admin/index.php?ToDo=editProduct&productId=72
 ```
 
 The product ID in this case is 72 (you can see it at the end of the URL above, where it says "productId=72").
+
+
+
+## Coming soon...
+* Dialog window to automate shortcode creation (select the product(s) you want displayed from a user interface instead of having to supply the ID)
