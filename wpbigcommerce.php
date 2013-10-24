@@ -2,10 +2,10 @@
 /*
 Plugin Name: WP Bigcommerce
 Plugin URI: http://www.commercecoders.com/bigcommerce/wordpress-plugin.html
-Description: TBA
+Description: WP Bigcommerce is the quickest and easiest way to list products from your Bigcommerce store on your Wordpress blog.
 Version: 1.0
 Author: Corey McMahon
-Author URI: http://www.commercecoders.com/about.html
+Author URI: http://www.commercecoders.com/
 */
 
 require_once(dirname(__FILE__) . '/bootstrap.php');
