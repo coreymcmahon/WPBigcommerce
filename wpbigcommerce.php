@@ -1,9 +1,9 @@
 <?php
 /*
 Plugin Name: WP Bigcommerce
-Plugin URI: http://www.commercecoders.com/bigcommerce/wordpress-plugin.html
+Plugin URI: http://www.commercecoders.com/bigcommerce/wordpress-plugin
 Description: WP Bigcommerce is the quickest and easiest way to list products from your Bigcommerce store on your Wordpress blog.
-Version: 1.0
+Version: 1.1
 Author: Corey McMahon
 Author URI: http://www.commercecoders.com/
 */
@@ -24,7 +24,7 @@ if (is_admin()) {
 function wp_bigcommerce_menu() 
 {
     // add_options_page( $page_title, $menu_title, $capability, $menu_slug, $function)
-    add_options_page('WP Bigcommerce', 'WP Bigcommerce', 'manage_options', WPBC_PLUGIN_IDENTIFIER, 'wp_bigcommerce_options_page'); // @TODO: menu_slug? should this be something else?
+    add_options_page('WP Bigcommerce', 'WP Bigcommerce', 'manage_options', WPBC_PLUGIN_IDENTIFIER, 'wp_bigcommerce_options_page');
 }
 
 function wp_bigcommerce_init() 
@@ -72,19 +72,19 @@ function wp_bigcommerce_settings_section_main()
 function wp_bigcommerce_settings_field_api_user() 
 {
     $options = get_option('wp_bigcommerce_options');
-    echo "<input id='wp_bc_api_user' name='wp_bigcommerce_options[api_user]' size='40' type='text' value='" . $options['api_user'] . "' placeholder='Enter the username for an API user here.' />";
+    echo "<input id='wp_bc_api_user' name='wp_bigcommerce_options[api_user]' size='40' type='text' value='" . $options['api_user'] . "' placeholder='e.g.: admin' />";
 }
 
 function wp_bigcommerce_settings_field_api_secret() 
 {
     $options = get_option('wp_bigcommerce_options');
-    echo "<input id='wp_bc_api_secret' name='wp_bigcommerce_options[api_secret]' size='40' type='text' value='" . $options['api_secret'] . "' placeholder='Enter the secret key for the API user here.' />";
+    echo "<input id='wp_bc_api_secret' name='wp_bigcommerce_options[api_secret]' size='40' type='text' value='" . $options['api_secret'] . "' placeholder='e.g.: 912ec803b2ce49e4a541068d495ab570' />";
 }
 
 function wp_bigcommerce_settings_field_api_url() 
 {
     $options = get_option('wp_bigcommerce_options');
-    echo "<input id='wp_bc_api_url' name='wp_bigcommerce_options[api_url]' size='40' type='text' value='" . $options['api_url'] . "' placeholder='Enter the URL for your Bigcommerce API here.' />";
+    echo "<input id='wp_bc_api_url' name='wp_bigcommerce_options[api_url]' size='40' type='text' value='" . $options['api_url'] . "' placeholder='e.g.: https://www.mystore.com' />";
 }
 
 function wp_bigcommerce_settings_field_api_status() 

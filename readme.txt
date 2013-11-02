@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: coreymcmahon
-Donate link: http://www.coreymcmahon.com/
+Donate link: http://www.commercecoders.com/
 Tags: bigcommerce, big commerce, commerce, ecommerce, e-commerce, cart, shopping cart, interspire
 Requires at least: 3.0
-Tested up to: 3.6.1
-Stable tag: 1.0
+Tested up to: 3.7.1
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,11 @@ https://www.yourstorename.com/admin/index.php?ToDo=editProduct&productId=72
 
 The product ID in this case is 72 (you can see it at the end of the URL above, where it says "productId=72").
 
+= Why does the plugin show different product information to what's in my store? =
+WP Bigcommerce saves (or "caches") information from you store so that it only needs to retrieve a product once. This makes it much faster, but it means the information won't be accurate if you change the product details in your store.
+
+You can fix this by "dumping" the cache. Go to the Settings > WP Bigcommerce page in your Wordpress backend and click the "Clear Cache" button.
+
 = PressTrends =
 
 This plugin uses [PressTrends](http://www.presstrends.io/) to gather anonymous usage statistics. By installing the plugin you agree to allow PressTrends to receive this information.
@@ -97,6 +102,11 @@ This plugin uses [PressTrends](http://www.presstrends.io/) to gather anonymous u
 2. Control which fields are displayed to customise the product listing.
 
 == Changelog ==
+
+= 1.1 =
+* Made fields orderable.
+* Added weight and dimensions units.
+* Added attributes to customise link: ```link_text```, ```link_class```, ```link_style```, ```link_target```.
 
 = 1.0 =
 Initial release.

@@ -43,8 +43,8 @@ class WPBigcommerceProducts
             'weight',
             'categories',
             'condition',
-            'link',
             'description_snippet',
+            'link',
         ];
         $others = [
             'availability_description',
@@ -166,6 +166,10 @@ class WPBigcommerceProducts
             'fields' => self::getFieldsString(),
             'image_width' => '200',
             'image_height' => '',
+            'link_target' => '_blank',
+            'link_style' => '',
+            'link_class' => '',
+            'link_text' => 'Buy Now',
         ), $atts);
 
         $ids = explode(',', $atts['products']);
@@ -191,6 +195,10 @@ class WPBigcommerceProducts
             'fields' => explode(',', $atts['fields']),
             'image_width' => $atts['image_width'],
             'image_height' => $atts['image_height'],
+            'link_target' => $atts['link_target'],
+            'link_style' => $atts['link_style'],
+            'link_class' => $atts['link_class'],
+            'link_text' => $atts['link_text'],
         ));
         echo $view->render();
     }

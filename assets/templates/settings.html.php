@@ -26,7 +26,7 @@
         <table class="form-table">
             <tbody>
                 <tr valign="top">
-                    <th scope="row">Product Cache</th>
+                    <th scope="row">Cache</th>
                     <td>
                         <input type="submit" name="clear_cache" id="clear_cache" class="button button-primary" value="Clear Cache" onclick="return confirm('Are you sure you want to clear the product cache?');">
                     </td>
