@@ -33,7 +33,7 @@ class WPBigcommerceProducts
 
     public static function getFields($all = false)
     {
-        $defaults = [
+        $defaults = array(
             'name',
             'image',
             'sku',
@@ -45,8 +45,8 @@ class WPBigcommerceProducts
             'condition',
             'description_snippet',
             'link',
-        ];
-        $others = [
+        );
+        $others = array(
             'availability_description',
             'retail_price',
             'sale_price',
@@ -57,7 +57,7 @@ class WPBigcommerceProducts
             'depth',
             'description',
             'description_html',
-        ];
+        );
         return ($all ? array_merge($defaults, $others) : $defaults);
     }
 
@@ -182,7 +182,7 @@ class WPBigcommerceProducts
             $product->image = $wpBigcommerceProducts->findProductImage($product->id);
             
             $categories = $product->categories;
-            $product->categories = [];
+            $product->categories = array();
             foreach ($categories as $category) {
                 $product->categories[] = $wpBigcommerceProducts->findCategory($category);
             }
