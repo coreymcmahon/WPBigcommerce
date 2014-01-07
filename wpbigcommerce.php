@@ -3,7 +3,7 @@
 Plugin Name: WP Bigcommerce
 Plugin URI: http://www.commercecoders.com/bigcommerce/wordpress-plugin
 Description: WP Bigcommerce is the quickest and easiest way to list products from your Bigcommerce store on your Wordpress blog.
-Version: 1.1
+Version: 1.2
 Author: Corey McMahon
 Author URI: http://www.commercecoders.com/
 */
